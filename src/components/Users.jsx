@@ -6,9 +6,17 @@ import randomUsers from '../api/random-users';
 
 const Users =() => {
   const [page, setPage] = useState(1);
+  const [isObservingLast, setIsObservingLast] = useState(true);
   const {loading, error, users} = useFetch(randomUsers, page)
 
-  console.log('total users', users.length)
+  const handleIsLast = (i, users) =>{
+    // console.log('i', i)
+    // console.log('total users', users.length)
+    // console.log('is last', i === users.length -1)
+    // setIsObservingLast(i === users.length -1)
+
+    return i === users.length -1
+  }
 
   return (
     <UsersContainer>
@@ -22,11 +30,9 @@ const Users =() => {
             phone={phone}
             website={website}
             email = {email}
-            isLast = {i === users.length -1}
-            newLimit = {()=> {
-              console.log('page ' , page)
-              setPage(page + 1)
-            }}
+            isLast = {handleIsLast(i, users)}
+            newLimit = {() => setPage(page + 1)}
+            // observing = {()=> isObservingLast? setIsObservingLast(false): setIsObservingLast(true)}
           />)
         })
       }

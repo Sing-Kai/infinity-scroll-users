@@ -2,39 +2,55 @@ import React, {useRef, useEffect, useState} from 'react'
 import UserContainer from './UserContainer';
 import Text from './Text'
 import { useInView } from 'react-intersection-observer';
+import useOnScreen from '../hooks/useOnScreen';
 
-const User = ({name, email, newLimit, isLast, website, phone}) => {
+const User = ({name, email, newLimit, isLast, phone}) => {
+
+  // const ref = useRef<HTMLDivElement>(null)
+  // const ref = useRef(null);
+  // const isVisible = useOnScreen(ref)
+  // console.log('is elemement visible', isVisible)
+
   //Select the Card component with useRef
-  const cardRef = useRef(null);
-  // const {ref: cardRef, inView} = useInView();
 
-  const [isVisible, setIsVisible] = useState(false);
+  const {ref, inView} = useInView();
+
+  console.log('is in view', inView);
+
+  // const [isVisible, setIsVisible] = useState(false);
   const options = {
     // root: document.querySelector('#scrollArea'),
     // rootMargin: '0px',
-    threshold: 1.0
+    threshold: 0.01
   }
 
   //Implement Intersection Observer to check if the last Card in the array is visible on the screen, then set a new limit
   useEffect(() => {
 
-    if (!cardRef?.current){
+    console.log('useEffect hook getting called')
+
+    if (!ref?.current){
       return;
     } 
 
+    // if(isLast && isVisible){
+    //   console.log('do something to fetch more data')
+    // }
+
     const observer = new IntersectionObserver(([entry]) => {
-      if (isLast && entry.isIntersecting) {
-        newLimit();
+      if (isLast && entry.isIntersecting ) {
+        // newLimit();
+        console.log('last and is intersecting')
         observer.unobserve(entry.target);
       }
     }, options);
 
-    observer.observe(cardRef.current);
+    // observer.observe(ref.current);
   }, [isLast]);
 
   return(
       <UserContainer>
-        <div ref={cardRef}>
+        <div ref={ref}>
           <Text>
             <span className="px4">{'name: '}</span>
             <span className="px4">{name }</span>
@@ -47,6 +63,7 @@ const User = ({name, email, newLimit, isLast, website, phone}) => {
             <span className="px4">{'email: '}</span>
             <span className="px4">{email}</span>
           </Text>
+          <div>{'is last ' + isLast}</div>
         </div>
       </UserContainer>
   )
