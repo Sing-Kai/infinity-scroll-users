@@ -13,11 +13,16 @@ const Posts = () => {
   } = usePosts(pageNum)
 
   const intObserver = useRef()
+
+  
   const lastPostRef = useCallback(post => {
+
     if (isLoading) return
 
+    //stop looking if there is element there
     if (intObserver.current) intObserver.current.disconnect()
 
+    //page number will update request new Post pages
     intObserver.current = new IntersectionObserver(posts => {
       if (posts[0].isIntersecting && hasNextPage) {
         console.log('near the last post!')
